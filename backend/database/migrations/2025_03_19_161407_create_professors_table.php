@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('professors', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->unique(); // Clé étrangère vers `users`
-            $table->string('subject_taught'); // subject_taught (String)
             $table->string('grade'); // grade (String)
-            $table->boolean('availability'); // availability (Boolean)
+            $table->boolean('availability')->default(false); // availability (Boolean)
             $table->timestamps();
+            $table->unsignedBigInteger('user_id')->unique(); // Clé étrangère vers `users`
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
