@@ -10,16 +10,20 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
- 
+
     public function registerUser(Request $request)
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|string|max:255',
+                'firstname' => 'required|string|max:255',
+                'lastname' => 'required|string|max:255',
+                'sex' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'password' => 'required|string|min:6|confirmed',
             ], [
-                'name.required' => 'Le nom est obligatoire.',
+                'firstname.required' => 'Le prénom est obligatoire.',
+                'lastname.required' => 'Le nom de famille est obligatoire.',
+                'sex.required' => 'Le sexe est obligatoire.',
                 'email.required' => 'L\'email est obligatoire.',
                 'email.email' => 'L\'email doit être valide.',
                 'email.unique' => 'L\'email existe déjà.',
@@ -29,7 +33,9 @@ class AuthController extends Controller
             ]);
 
             $user = User::create([
-                'name' => $request->name,
+                'firstname' => $request->firstname,
+                'lastname' => $request->lastname,
+                'sex' => $request->sex,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
@@ -50,21 +56,22 @@ class AuthController extends Controller
     }
 
 
-    public function login(Request $request)
+   public function login(Request $request)
     {
+        // Validation des champs requis
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
+        // Si l'authentification échoue, retourne une réponse 401
         if (!Auth::attempt($request->only('email', 'password'))) {
-            throw ValidationException::withMessages([
-                'email' => ['Les identifiants sont incorrects.']
-            ]);
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401);
         }
 
-        $user = User::where('email', $request->email)->first();
-
+        $user = Auth::user();
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
