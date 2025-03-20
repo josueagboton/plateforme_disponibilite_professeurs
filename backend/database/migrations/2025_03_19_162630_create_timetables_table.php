@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('timetables', function (Blueprint $table) {
             $table->id();
-            $table->string('periode'); // periode (String)
+            $table->string('period'); // periode (String)
             $table->timestamps();
         });
     }
