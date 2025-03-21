@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Professors;
 use App\Models\Availability;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AvailabilityController extends Controller
 {
@@ -22,6 +25,8 @@ class AvailabilityController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+             // Validation des données
         $request->validate([
             'day' => 'required|date',
             'hour_Start' => 'required|date_format:H:i',
@@ -29,17 +34,41 @@ class AvailabilityController extends Controller
             'professor_id' => 'required|exists:professors,id',
         ]);
 
-        $availability = Availability::create($request->all());
+        // Vérifiez si le professeur existe
+        $professorExists = User::find($request->professor_id);
+        if (!$professorExists) {
+            return response()->json(['error' => 'Professeur introuvable'], 400);
+        }
 
-        return response()->json($availability, 201);
+
+        // Création de la disponibilité
+        $availability = Availability::create([
+            'day' => $request->day,
+            'hour_Start' => $request->hour_Start,
+            'hour_End' => $request->hour_End,
+            'professor_id' => $request->professor_id,
+        ]);
+
+        // Retourner la disponibilité créée en réponse
+        return response()->json(['availability' => $availability,
+                            "success"=> "Success"], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Erreur de validation',
+                'errors' => $e->errors()
+            ], 422);
+        }
+
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $availability = Availability::findOrFail($id);
+        $availability = Availability::with('professor')->find($id);
+
         if (!$availability) {
             return response()->json(['message' => 'Availability not found'], 404);
         }

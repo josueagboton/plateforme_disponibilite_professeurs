@@ -21,16 +21,24 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'subject_taught' => 'required|string|max:255',
-            'duration' => 'required|integer',
-            'description' => 'required|string',
-            'professor_id' => 'required|exists:professors,id',
-        ]);
+        try {
+            //code...
+            $validated = $request->validate([
+                'subject_taught' => 'required|string|max:255',
+                'duration' => 'required|integer',
+                'description' => 'required|string',
+                // 'professor_id' => 'required|exists:professors,id',
+            ]);
 
-        $course = Courses::create($validated);
+            $course = Courses::create($validated);
 
-        return response()->json($course, 201);
+            return response()->json($course, 201);
+         } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Erreur de validation',
+                'errors' => $e->errors()
+            ], 422);
+        }
     }
 
     /**
@@ -51,6 +59,8 @@ class CourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
+       try {
+        //code...
         $course = Courses::find($id);
         if (!$course) {
             return response()->json(['message' => 'Course not found'], 404);
@@ -58,7 +68,7 @@ class CourseController extends Controller
 
         $validated = $request->validate([
             'subject_taught' => 'sometimes|string|max:255',
-            'duration' => 'sometimes|date_format:H:i:s',
+            'duration' => 'integer',
             'description' => 'sometimes|string',
             'professor_id' => 'sometimes|exists:professors,id',
         ]);
@@ -66,6 +76,12 @@ class CourseController extends Controller
         $course->update($validated);
 
         return response()->json($course);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Erreur de validation',
+                'errors' => $e->errors()
+            ], 422);
+        }
     }
 
     /**
@@ -85,11 +101,11 @@ class CourseController extends Controller
 
     }
 
-    // ✅ Restaurer un cours supprimé
-    public function restored($id)
+    // Restaurer un cours supprimé
+    public function restore($id)
     {
         $course = Courses::withTrashed()->findOrFail($id);
-        $course->restore(); // Restore le cours
+
         if (!$course) {
             return response()->json(['message' => 'Course not found'], 404);
         }
