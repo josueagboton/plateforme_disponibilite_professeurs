@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Professors;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,5 +22,11 @@ class Availability extends Model
     public function professor()
     {
         return $this->belongsTo(Professors::class);
+    }
+
+    // Relation avec User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
