@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('professors', function (Blueprint $table) {
             $table->id();
             $table->string('grade'); // grade (String)
-            $table->boolean('availability')->default(false); // availability (Boolean)
+            $table->boolean('availability')->default(true); // availability (Boolean)
             $table->timestamps();
             $table->unsignedBigInteger('user_id')->unique(); // Clé étrangère vers `users`
 

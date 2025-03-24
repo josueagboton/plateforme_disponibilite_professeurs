@@ -6,8 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\AdministratorController;
-
-
+use App\Http\Controllers\ProfessorController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -44,6 +43,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //pour l'administrateur
     // Affecter un professeur à un cours
     Route::post('/courses/{id}/assign', [AdministratorController::class, 'assignToProfessor']);
+
+    //afficher les prof disponibles
+    Route::get('available-teachers', [ProfessorController::class, 'availableTeachers']);
+
 
 });
 

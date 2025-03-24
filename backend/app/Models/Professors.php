@@ -13,7 +13,8 @@ class Professors extends Model
 
     protected $fillable = [
         'grade',
-        'user_id'
+        'user_id',
+        'availability'
     ];
 
     public function courses()
@@ -23,6 +24,6 @@ class Professors extends Model
 
     public function availabilities()
     {
-        return $this->hasMany(Availability::class);
+        return $this->hasMany(Availability::class, 'professor_id');
     }
 }
