@@ -58,7 +58,9 @@ class AdministratorController extends Controller
             'day' => 'required|date|after_or_equal:today', // Le jour doit être valide et >= aujourd'hui
             'hour_start' => 'required|date_format:H:i',
             'hour_end' => 'required|date_format:H:i|after:hour_start',
-            'professor_id' => 'required|exists:professors,id'
+            'user_id' => 'required|exists:users,id',
+            'level_education_id' => 'required|exists:level_education,id',
+            'department_id'  => 'required|exists:departments,id',
         ]);
 
         $course = Courses::find($courseId);
@@ -69,7 +71,7 @@ class AdministratorController extends Controller
             ], 404);
         }
 
-        $professor = Professors::find($request->professor_id);
+        $professor = Professors::find($request->user_id);
 
         // ➡️ Date de début de la semaine en cours
         $startOfWeek = now()->startOfWeek(); // Lundi à 00:00:00
@@ -95,17 +97,8 @@ class AdministratorController extends Controller
                 'message' => 'Le professeur n\'est pas disponible à cette heure.'
             ], 400);
         }
-
-        // ➡️ Vérification que le cours est programmé au moins 24h à l'avance
-        $now = now(); // Date et heure actuelles
-        if ($day->isToday() || $day->diffInHours($now) < 24) {
-            return response()->json([
-                'message' => 'Le cours doit être programmé au moins 24 heures à l\'avance.'
-            ], 400);
-        }
-
         // ➡️ Vérification de conflit avec un autre cours déjà programmé
-        $isConflict = CourseSchedule::where('professor_id', $professor->id)
+        $isConflict = CourseSchedule::where('user_id', $professor->id)
             ->where('day', $day)
             ->where(function ($query) use ($request) {
                 $query->whereBetween('hour_start', [$request->hour_start, $request->hour_end])
@@ -125,12 +118,13 @@ class AdministratorController extends Controller
 
         // ➡️ Enregistrer la programmation du cours
         $schedule = CourseSchedule::create([
-            'event' => $course->title,
             'day' => $request->day,
             'hour_start' => $request->hour_start,
             'hour_end' => $request->hour_end,
-            'professor_id' => $professor->id,
-            'course_id' => $course->id
+            'user_id' => $professor->id,
+            'course_id' => $course->id,
+            'department_id' => $request->department_id,
+            'level_education_id' => $request->level_education_id
         ]);
 
         return response()->json([

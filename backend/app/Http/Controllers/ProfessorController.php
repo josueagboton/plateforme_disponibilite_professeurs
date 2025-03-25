@@ -20,12 +20,10 @@ class ProfessorController extends Controller
             $startOfWeek = now()->startOfWeek()->format('Y-m-d');
             $endOfWeek = now()->endOfWeek()->format('Y-m-d');
 
-            $profs = Professors::where('availability', true)
-                ->whereHas('availabilities', function ($query) use ($currentTime, $startOfWeek, $endOfWeek) {
-                    $query->whereBetween('day', [$startOfWeek, $endOfWeek]) // Filtrer la semaine complète
-                        ->where('hour_start', '<=', $currentTime) // Vérifier la plage horaire
-                        ->where('hour_end', '>=', $currentTime);
-                })->get();
+            $profs = Professors::whereHas('availabilities', function ($query) use ($currentTime, $startOfWeek, $endOfWeek) {
+                    $query->whereBetween('day', [$startOfWeek, $endOfWeek]); // Filtrer la semaine complète
+
+                })->with('availabilities')->get();
 
             return response()->json([
                 'professors' => $profs

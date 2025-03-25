@@ -8,11 +8,12 @@ class CourseSchedule extends Model
 {
    protected $fillable = ['event',
             'day',
-            'event',
             'hour_start' ,
             'hour_end',
             'user_id',
-            'course_id'];
+            'course_id',
+            'department_id', 'level_education_id'
+        ];
 
     public function course()
     {

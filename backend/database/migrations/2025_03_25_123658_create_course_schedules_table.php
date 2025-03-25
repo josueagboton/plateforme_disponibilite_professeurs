@@ -16,10 +16,16 @@ return new class extends Migration
             $table->date('day');
             $table->time('hour_Start'); // heureDebut (Time)
             $table->time('hour_End'); // heureFin (Time)
-            $table->unsignedBigInteger('user_id')->unique(); // Clé étrangère vers `users`
+            $table->unsignedBigInteger('user_id'); // Clé étrangère vers `users`
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('course_id')->nullable(); // Clé étrangère vers `professor`
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
+            $table->unsignedBigInteger('department_id'); // Filière associée
+            $table->unsignedBigInteger('level_education_id'); // Niveau associé
+
+             // Définir les clés étrangères
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
+            $table->foreign('level_education_id')->references('id')->on('level_education')->onDelete('cascade');
             $table->timestamps();
         });
     }
