@@ -27,8 +27,7 @@ Route::get('/weekly-schedule', [AdministratorController::class, 'getWeeklySchedu
 
 Route::middleware('guest')->post('/login', [AuthController::class, 'login'])->name('login');
 
-// Route::middleware('auth:sanctum')->group(function () {
-Route::middleware('guest')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
