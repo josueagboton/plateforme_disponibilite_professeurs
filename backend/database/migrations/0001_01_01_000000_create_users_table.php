@@ -17,11 +17,18 @@ return new class extends Migration
             $table->string('lastname');
             $table->enum('sex', ['M', 'F'])->default('M');
             $table->enum('role', ['student', 'professor', 'administrator'])->default('student');
+            $table->enum('function', ['Secretaire', 'DA', 'CS'])->default('Secretaire');
+
             $table->string('email')->unique();
+            $table->string("level_of_education")->nullable(); //pour un etudiqnt
+            $table->string('grade')->nullable(); // grade (String) pour un prof
             $table->timestamp('email_verified_at')->nullable();
+
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('professors', function (Blueprint $table) {
+        Schema::create('course_schedules', function (Blueprint $table) {
             $table->id();
-            $table->string('grade'); // grade (String)
-            $table->boolean('availability')->default(false); // availability (Boolean)
-            $table->timestamps();
+            $table->string('event')->nullable();
+            $table->date('day');
+            $table->time('hour_Start'); // heureDebut (Time)
+            $table->time('hour_End'); // heureFin (Time)
             $table->unsignedBigInteger('user_id')->unique(); // Clé étrangère vers `users`
-
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('course_id')->nullable(); // Clé étrangère vers `professor`
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('professors');
+        Schema::dropIfExists('course_schedules');
     }
 };

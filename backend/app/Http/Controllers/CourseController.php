@@ -27,8 +27,9 @@ class CourseController extends Controller
                 'subject_taught' => 'required|string|max:255',
                 'duration' => 'required|integer',
                 'description' => 'required|string',
-                // 'professor_id' => 'required|exists:professors,id',
+                'user_id' => 'required|exists:users,id',
             ]);
+
 
             $course = Courses::create($validated);
 
@@ -70,7 +71,7 @@ class CourseController extends Controller
             'subject_taught' => 'sometimes|string|max:255',
             'duration' => 'integer',
             'description' => 'sometimes|string',
-            'professor_id' => 'sometimes|exists:professors,id',
+            'user_id' => 'sometimes|exists:users,id',
         ]);
 
         $course->update($validated);

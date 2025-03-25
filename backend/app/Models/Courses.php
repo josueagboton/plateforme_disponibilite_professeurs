@@ -15,11 +15,11 @@ class Courses extends Model
         'subject_taught',
         'duration',
         'description',
-        'professor_id'
+        'user_id'
     ];
 
     public function professor()
     {
-        return $this->belongsTo(Professors::class);
+        return $this->belongsTo(Professors::class,'user_id');
     }
 }

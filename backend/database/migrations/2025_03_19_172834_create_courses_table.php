@@ -17,8 +17,8 @@ return new class extends Migration
             $table->integer('duration');
             $table->string('description'); // description (String)
 
-            $table->unsignedBigInteger('professor_id')->nullable(); // Clé étrangère vers `professor`
-            $table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->unique(); // Clé étrangère vers `users`
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
 

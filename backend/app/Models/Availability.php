@@ -16,17 +16,12 @@ class Availability extends Model
         'day',
         'hour_Start',
         'hour_End',
-        'professor_id',
+        'user_id',
     ];
 
     public function professor()
     {
-        return $this->belongsTo(Professors::class);
+        return $this->belongsTo(Professors::class. 'user_id');
     }
 
-    // Relation avec User
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }
