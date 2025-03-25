@@ -23,7 +23,7 @@ class StatisticController extends Controller
         // Taux d'occupation par professeur
         $professorOccupation = ProfessorS::with('courses')->get()->map(function ($professor) {
             $totalHours = $professor->courses->sum('duration');
-            $availableHours = Availability::where('professor_id', $professor->id)
+            $availableHours = Availability::where('user_id', $professor->id)
                 ->sumRaw('TIMESTAMPDIFF(HOUR, hour_Start, hour_End)');
 
             $occupationRate = $availableHours > 0 ? ($totalHours / $availableHours) * 100 : 0;

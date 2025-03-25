@@ -17,67 +17,12 @@ class AuthController extends Controller
     public function registerUser(Request $request, string $type)
     {
         try {
-            // Validation commune
-            $baseValidation = [
-                'firstname' => 'required|string|max:255',
-                'lastname' => 'required|string|max:255',
-                'sex' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users,email',
-                'password' => 'required|string|min:6|confirmed',
-            ];
-
-            $extraValidation = match ($type) {
-                'professor' => [
-                    'grade' => 'required|string|max:255'
-                ],
-                'student' => [
-                    'level_of_education' => 'required|string|max:255',
-                ],
-                'administrator' => [
-                    'function' => 'required|string|max:255',
-                ],
-                default => [],
-            };
-
-            $validated = $request->validate(array_merge($baseValidation, $extraValidation));
-
-            // Création de l'utilisateur
-            $user = User::create([
-                'firstname' => $validated['firstname'],
-                'lastname' => $validated['lastname'],
-                'sex' => $validated['sex'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-                'role' => $type
-            ]);
-
-            // Association selon le type d'utilisateur
-            $data = match ($type) {
-                'professor' => Professors::create([
-                    'grade' => $validated['grade'],
-                    'user_id' => $user->id
-                ]),
-                'student' => Students::create([
-                    'level_of_education' => $validated['level_of_education'],
-                    'user_id' => $user->id
-
-                ]),
-                'administrator' => Administrators::create([
-                    'function' => $validated['function'],
-                    'user_id' => $user->id
-                ]),
-                default => null,
-            };
-
-            // Génération du token
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $validated = $this->validateUserData($request, $type);
+            $data = $this->createUser($type, $validated);
 
             return response()->json([
-                'user' => $user,
                 'data' => $data,
-                'token' => $token,
             ], 201);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation',
@@ -85,6 +30,53 @@ class AuthController extends Controller
             ], 422);
         }
     }
+
+    protected function validateUserData(Request $request, string $type)
+    {
+        $baseValidation = [
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'sex' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ];
+
+        $extraValidation = match ($type) {
+            'professor' => ['grade' => 'required|string|max:255'],
+            'student' => ['level_of_education' => 'required|string|max:255'],
+            'administrator' => ['function' => 'required|string|max:255'],
+            default => [],
+        };
+
+        return $request->validate(array_merge($baseValidation, $extraValidation));
+    }
+
+    protected function createUser(string $type, array $validated)
+    {
+        $commonData = [
+            'firstname' => $validated['firstname'],
+            'lastname' => $validated['lastname'],
+            'sex' => $validated['sex'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => $type,
+        ];
+
+        $extraData = match ($type) {
+            'professor' => ['grade' => $validated['grade']],
+            // 'student' => ['level_of_education' => $validated['level_of_education']],
+            'administrator' => ['function' => $validated['function']],
+            default => [],
+        };
+
+        return match ($type) {
+            'professor' => Professors::create(array_merge($commonData, $extraData)),
+            // 'student' => Students::create(array_merge($commonData, $extraData)),
+            'administrator' => Administrators::create(array_merge($commonData, $extraData)),
+            default => null,
+        };
+    }
+
 
    public function login(Request $request)
     {

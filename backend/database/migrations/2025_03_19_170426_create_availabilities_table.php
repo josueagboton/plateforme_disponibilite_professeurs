@@ -17,10 +17,10 @@ return new class extends Migration
             $table->time('hour_Start'); // heureDebut (Time)
             $table->time('hour_End'); // heureFin (Time)
             $table->timestamps();
-            $table->unsignedBigInteger('professor_id');
+            $table->unsignedBigInteger('user_id')->unique(); // Clé étrangère vers `users`
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
 
-            $table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
         });
     }
 

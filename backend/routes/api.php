@@ -14,24 +14,27 @@ Route::get('/user', function (Request $request) {
 
 
 
-Route::post('/register/student', [AuthController::class, 'registerUser'])->defaults('type', 'student');
+// Route::post('/register/student', [AuthController::class, 'registerUser'])->defaults('type', 'student');
 Route::post('/register/professor', [AuthController::class, 'registerUser'])->defaults('type', 'professor');
 Route::post('/register/administrator', [AuthController::class, 'registerUser'])->defaults('type', 'administrator');
 
 //consulter l'emploie de temps par un etudiant
-// Route::get('get/courses', CourseController::class, 'index');
+Route::get('/weekly-schedule', [AdministratorController::class, 'getWeeklySchedule']);
+
 
 
 Route::middleware('guest')->post('/login', [AuthController::class, 'login'])->name('login');
 
-Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('guest')->group(function () {
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     //modifier le profil
     Route::put('/update-profil', [AuthController::class, 'updateProfil'])->name('updateProfile');
 
 
-    Route::apiResource('courses', CourseController::class)->middleware('can:isAdmin');;
+    Route::apiResource('courses', CourseController::class);
     Route::get('courses/trashed', [CourseController::class, 'trashed'])->name('courses.trashed');
     Route::patch('courses/{id}/restore', [CourseController::class, 'restore'])->name('courses.restore');;
 
@@ -46,6 +49,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //afficher les prof disponibles
     Route::get('available-teachers', [ProfessorController::class, 'availableTeachers']);
+
+    //programmer un cours
+    Route::post('/courses/{courseId}/schedule', [AdministratorController::class, 'scheduleCourse']);
+
+    //afficher l'emploie du temps
+    Route::get('/weekly-schedule', [AdministratorController::class, 'getWeeklySchedule']);
+
+
 
 
 });

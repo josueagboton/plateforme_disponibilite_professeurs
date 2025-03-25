@@ -7,15 +7,20 @@ use App\Models\Availability;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Professors extends Model
+class Professors extends User
 {
     use HasFactory;
 
-    protected $fillable = [
-        'grade',
-        'user_id',
-        'availability'
-    ];
+    protected $table = 'users';
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($professor) {
+            $professor->grade = $professor->grade ?? 'Assistant';
+        });
+    }
 
     public function courses()
     {
@@ -24,6 +29,6 @@ class Professors extends Model
 
     public function availabilities()
     {
-        return $this->hasMany(Availability::class, 'professor_id');
+        return $this->hasMany(Availability::class, 'user_id');
     }
 }

@@ -29,13 +29,13 @@ class AvailabilityController extends Controller
              // Validation des données
         $request->validate([
             'day' => 'required|date',
-            'hour_Start' => 'required|date_format:H:i',
-            'hour_End' => 'required|date_format:H:i|after:hour_Start',
-            'professor_id' => 'required|exists:professors,id',
+            'hour_start' => 'required|date_format:H:i',
+            'hour_end' => 'required|date_format:H:i|after:hour_Start',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         // Vérifiez si le professeur existe
-        $professorExists = User::find($request->professor_id);
+        $professorExists = User::find($request->user_id);
         if (!$professorExists) {
             return response()->json(['error' => 'Professeur introuvable'], 400);
         }
@@ -44,9 +44,9 @@ class AvailabilityController extends Controller
         // Création de la disponibilité
         $availability = Availability::create([
             'day' => $request->day,
-            'hour_Start' => $request->hour_Start,
-            'hour_End' => $request->hour_End,
-            'professor_id' => $request->professor_id,
+            'hour_Start' => $request->hour_start,
+            'hour_End' => $request->hour_end,
+            'user_id' => $request->user_id,
         ]);
 
         // Retourner la disponibilité créée en réponse
@@ -84,9 +84,9 @@ class AvailabilityController extends Controller
 
         $request->validate([
             'day' => 'required|date',
-            'hour_Start' => 'required|date_format:H:i',
-            'hour_End' => 'required|date_format:H:i|after:hour_Start',
-            'professor_id' => 'required|exists:professors,id',
+            'hour_start' => 'required|date_format:H:i',
+            'hour_end' => 'required|date_format:H:i|after:hour_Start',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         $availability->update($request->all());

@@ -25,7 +25,9 @@ class User extends Authenticatable
         "sex",
         'email',
         'password',
-        'role'
+        'role',
+        'function',
+        'grade',
     ];
 
     /**
@@ -55,4 +57,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Availability::class);
     }
+
+    public function isAdmin()
+    {
+        return $this instanceof Administrators;
+    }
+
+    public function isProfessor()
+    {
+        return $this instanceof Professors;
+    }
+
 }

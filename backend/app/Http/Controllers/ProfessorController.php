@@ -16,11 +16,6 @@ class ProfessorController extends Controller
         try {
             $currentTime = now()->format('H:i:s');
 
-            // $profs = Professors::where('availability', true)
-            //     ->whereHas('availabilities', function ($query) use ($currentTime) {
-            //         $query->where('day', today()->format('Y-m-d'))
-            //             // ->where('hour_end', '>=', $currentTime);
-            //     })->get();
 
             $startOfWeek = now()->startOfWeek()->format('Y-m-d');
             $endOfWeek = now()->endOfWeek()->format('Y-m-d');
@@ -43,7 +38,7 @@ class ProfessorController extends Controller
         }
     }
 
-    
+
 
 
 

@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('course_schedules', function (Blueprint $table) {
             $table->id();
             $table->string('event')->nullable();
+            $table->date('day');
             $table->time('hour_Start'); // heureDebut (Time)
             $table->time('hour_End'); // heureFin (Time)
-            $table->unsignedBigInteger('professor_id')->nullable(); // Clé étrangère vers `professor`
-            $table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->unique(); // Clé étrangère vers `users`
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('course_id')->nullable(); // Clé étrangère vers `professor`
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
             $table->timestamps();
