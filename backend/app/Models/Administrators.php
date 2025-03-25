@@ -12,13 +12,4 @@ class Administrators extends User
 
     protected $table = 'users';
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($admin) {
-            // Si aucune fonction n'est définie, définir par défaut 'Secretaire'
-            $admin->function = $admin->function ?? AdminFunction::Secretaire->value;
-        });
-    }
 }

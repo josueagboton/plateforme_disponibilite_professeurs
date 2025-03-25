@@ -11,12 +11,4 @@ class Students extends User
 
     protected $table = 'users';
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($student) {
-            $student->level_of_education = $student->level_of_education ?? 'Licence 1';
-        });
-    }
 }

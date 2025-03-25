@@ -44,7 +44,7 @@ class AuthController extends Controller
         $extraValidation = match ($type) {
             'professor' => ['grade' => 'required|string|max:255'],
             'student' => ['level_of_education' => 'required|string|max:255'],
-            'administrator' => ['function' => 'required|string|max:255'],
+            // 'administrator' => ['function' => 'required|string|max:255'],
             default => [],
         };
 
@@ -65,7 +65,7 @@ class AuthController extends Controller
         $extraData = match ($type) {
             'professor' => ['grade' => $validated['grade']],
             // 'student' => ['level_of_education' => $validated['level_of_education']],
-            'administrator' => ['function' => $validated['function']],
+            // 'administrator' => ['function' => $validated['function']],
             default => [],
         };
 
@@ -145,9 +145,9 @@ class AuthController extends Controller
                 'student' => [
                     'level_of_education' => 'nullable|string|max:255',
                 ],
-                'administrator' => [
-                    'function' => 'nullable|string|max:255',
-                ],
+                // 'administrator' => [
+                //     'function' => 'nullable|string|max:255',
+                // ],
                 default => [],
             };
 
@@ -171,9 +171,9 @@ class AuthController extends Controller
                 'student' => Students::where('user_id', $user->id)->update([
                     'level_of_education' => $validated['level_of_education'] ?? Students::where('user_id', $user->id)->value('level_of_education'),
                 ]),
-                'administrator' => Administrators::where('user_id', $user->id)->update([
-                    'function' => $validated['function'] ?? Administrators::where('user_id', $user->id)->value('function'),
-                ]),
+                // 'administrator' => Administrators::where('user_id', $user->id)->update([
+                //     'function' => $validated['function'] ?? Administrators::where('user_id', $user->id)->value('function'),
+                // ]),
                 default => null,
             };
 
