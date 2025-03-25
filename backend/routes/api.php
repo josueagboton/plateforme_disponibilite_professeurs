@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\AdministratorController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\LevelEducationController;
 use App\Http\Controllers\ProfessorController;
 
 Route::get('/user', function (Request $request) {
@@ -55,6 +57,9 @@ Route::middleware('guest')->group(function () {
 
     //afficher l'emploie du temps
     Route::get('/weekly-schedule', [AdministratorController::class, 'getWeeklySchedule']);
+
+    Route::get('/departments', [DepartmentController::class, 'index']);
+    Route::get('/level-educations', [LevelEducationController::class, 'index']);
 
 
 

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('course_schedules', function (Blueprint $table) {
             $table->id();
-            $table->string('event')->nullable();
             $table->date('day');
             $table->time('hour_Start'); // heureDebut (Time)
             $table->time('hour_End'); // heureFin (Time)
