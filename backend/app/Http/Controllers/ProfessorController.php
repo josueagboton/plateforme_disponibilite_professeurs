@@ -7,6 +7,8 @@ use App\Models\Professors;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPUnit\Framework\throwException;
+
 class ProfessorController extends Controller
 {
     //liste des profs dispoble à partir d'une heurs
@@ -35,6 +37,34 @@ class ProfessorController extends Controller
             ], 500);
         }
     }
+
+    public function index()
+    {
+        $professors = Professors::all();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $professors
+        ]);
+    }
+
+    public function show($id)
+    {
+        $professor = Professors::find($id);
+
+        if (!$professor) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Professor not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $professor
+        ]);
+    }
+
 
 
 
