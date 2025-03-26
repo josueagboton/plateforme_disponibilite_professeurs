@@ -40,8 +40,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('courses/{id}/restore', [CourseController::class, 'restore'])->name('courses.restore');;
 
     Route::apiResource('availability', AvailabilityController::class);
-    Route::get('availability/trashed', [AvailabilityController::class, 'trashed'])->name('availability.trashed');
-    Route::patch('availability/{id}/restore', [AvailabilityController::class, 'restore'])->name('availability.trashed');;
+    Route::get('availability/trashed', [AvailabilityController::class, 'trashed']);
+    Route::patch('availability/{id}/restore', [AvailabilityController::class, 'restore']);
 
 
     //pour l'administrateur
