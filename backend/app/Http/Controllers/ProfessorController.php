@@ -40,7 +40,7 @@ class ProfessorController extends Controller
 
     public function index()
     {
-        $professors = Professors::all();
+        $professors = Professors::where('role', 'professor')->get();
 
         return response()->json([
             'status' => 'success',
