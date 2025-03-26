@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Courses;
+use App\Models\Professors;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -30,8 +32,22 @@ class CourseController extends Controller
                 'user_id' => 'required|exists:users,id',
             ]);
 
+            $prof = Professors::where('role', 'professor')
+            ->where('id', $request->user_id)
+            ->first();
 
-            $course = Courses::create($validated);
+            if(!$prof){
+                return response()->json([
+                    'error' => "User is not Professor",
+                ], 422);
+            }
+
+            $course = Courses::create([
+                'subject_taught' => $request->subject_taught,
+                'duration' => $request->duration,
+                'description' => $request->description,
+                'user_id' => $prof->id,
+            ]);
 
             return response()->json($course, 201);
          } catch (\Illuminate\Validation\ValidationException $e) {

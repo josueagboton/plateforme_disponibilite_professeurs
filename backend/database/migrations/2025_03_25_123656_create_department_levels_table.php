@@ -22,42 +22,50 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Insertion des niveaux d'études
-        $levels = [
-            ['name' => 'Licence 1', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Licence 2', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Licence 3', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Master 1', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Master 2', 'created_at' => now(), 'updated_at' => now()],
-        ];
+    $departmentsWithLevels = [
+        'Génie Logiciel' => ['Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2'],
+        'Sécurité Informatique' => ['Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2'],
+        'IA' => ['Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2']
+    ];
 
-        DB::table('level_education')->insert($levels);
+    // Insertion des départements et récupération de leurs IDs
+    foreach ($departmentsWithLevels as $departmentName => $levels) {
+        // Insérer le département
+        $departmentId = DB::table('departments')->insertGetId([
+            'name' => $departmentName,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        // Récupération des IDs des niveaux
-        $levels = DB::table('level_education')->get();
+        // Insertion des niveaux d'éducation associés à chaque département
+        foreach ($levels as $levelName) {
+            // Vérifier si le niveau existe déjà, sinon l'insérer
+            $level = DB::table('level_education')->where('name', $levelName)->first();
 
-        // Insertion des départements
-        $departments = ['Génie Logiciel', 'Sécurité Informatique', 'IA'];
-        $data = [];
-
-        foreach ($departments as $department) {
-            $departmentId = DB::table('departments')->insertGetId([
-                'name' => $department,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            // Association avec chaque niveau dans la table pivot
-            foreach ($levels as $level) {
-                DB::table('department_level')->insert([
-                    'department_id' => $departmentId,
-                    'level_education_id' => $level->id,
+            if (!$level) {
+                // Si le niveau n'existe pas, l'insérer
+                $levelId = DB::table('level_education')->insertGetId([
+                    'name' => $levelName,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
+            } else {
+                // Si le niveau existe, récupérer son ID
+                $levelId = $level->id;
             }
+
+            // Associer le département avec le niveau d'éducation dans la table pivot
+            DB::table('department_level')->insert([
+                'department_id' => $departmentId,
+                'level_education_id' => $levelId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
     }
+
+   }
+
 
     /**
      * Reverse the migrations.

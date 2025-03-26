@@ -17,7 +17,7 @@ return new class extends Migration
             $table->time('hour_Start'); // heureDebut (Time)
             $table->time('hour_End'); // heureFin (Time)
             $table->timestamps();
-            $table->unsignedBigInteger('user_id')->unique(); // Clé étrangère vers `users`
+            $table->unsignedBigInteger('user_id'); // Clé étrangère vers `users`
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
 

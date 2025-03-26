@@ -40,13 +40,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('courses/{id}/restore', [CourseController::class, 'restore'])->name('courses.restore');;
 
     Route::apiResource('availability', AvailabilityController::class);
-    Route::get('availability/trashed', [AvailabilityController::class, 'trashed'])->name('availability.trashed');
-    Route::patch('availability/{id}/restore', [AvailabilityController::class, 'restore'])->name('availability.trashed');;
+    Route::get('availability/trashed', [AvailabilityController::class, 'trashed']);
+    Route::patch('availability/{id}/restore', [AvailabilityController::class, 'restore']);
 
 
     //pour l'administrateur
     // Affecter un professeur à un cours
     Route::post('/courses/{id}/assign', [AdministratorController::class, 'assignToProfessor']);
+
+
+    //la listes des profs
+    Route::get('/professors', [ProfessorController::class, 'index']);
+    Route::get('/professors/{id}', [ProfessorController::class, 'show']);
+
 
     //afficher les prof disponibles
     Route::get('available-teachers', [ProfessorController::class, 'availableTeachers']);
@@ -57,7 +63,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //afficher l'emploie du temps
     Route::get('/weekly-schedule', [AdministratorController::class, 'getWeeklySchedule']);
 
+    //les filieres
     Route::get('/departments', [DepartmentController::class, 'index']);
+
+    //recuperer les niveaux d'etudes
     Route::get('/level-educations', [LevelEducationController::class, 'index']);
 
 

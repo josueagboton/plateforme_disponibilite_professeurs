@@ -7,6 +7,8 @@ use App\Models\Professors;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPUnit\Framework\throwException;
+
 class ProfessorController extends Controller
 {
     //liste des profs dispoble à partir d'une heurs
@@ -20,12 +22,10 @@ class ProfessorController extends Controller
             $startOfWeek = now()->startOfWeek()->format('Y-m-d');
             $endOfWeek = now()->endOfWeek()->format('Y-m-d');
 
-            $profs = Professors::where('availability', true)
-                ->whereHas('availabilities', function ($query) use ($currentTime, $startOfWeek, $endOfWeek) {
-                    $query->whereBetween('day', [$startOfWeek, $endOfWeek]) // Filtrer la semaine complète
-                        ->where('hour_start', '<=', $currentTime) // Vérifier la plage horaire
-                        ->where('hour_end', '>=', $currentTime);
-                })->get();
+            $profs = Professors::whereHas('availabilities', function ($query) use ($currentTime, $startOfWeek, $endOfWeek) {
+                    $query->whereBetween('day', [$startOfWeek, $endOfWeek]); // Filtrer la semaine complète
+
+                })->with('availabilities')->get();
 
             return response()->json([
                 'professors' => $profs
@@ -37,6 +37,34 @@ class ProfessorController extends Controller
             ], 500);
         }
     }
+
+    public function index()
+    {
+        $professors = Professors::where('role', 'professor')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $professors
+        ]);
+    }
+
+    public function show($id)
+    {
+        $professor = Professors::find($id);
+
+        if (!$professor) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Professor not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $professor
+        ]);
+    }
+
 
 
 
