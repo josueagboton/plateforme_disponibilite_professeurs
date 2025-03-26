@@ -10,7 +10,8 @@ class Department extends Model
 
     public function levels()
     {
-        return $this->belongsToMany(LevelEducation::class, 'department_level', 'level_education_id');
+        return $this->belongsToMany(LevelEducation::class, 'department_level', 'department_id', 'level_education_id')
+                    ->withTimestamps();
     }
 
     public function courses()
