@@ -23,40 +23,40 @@ return new class extends Migration
         });
 
         // Insertion des niveaux d'études
-        $levels = [
-            ['name' => 'Licence 1', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Licence 2', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Licence 3', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Master 1', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Master 2', 'created_at' => now(), 'updated_at' => now()],
-        ];
+    $levels = [
+        ['name' => 'Licence 1', 'created_at' => now(), 'updated_at' => now()],
+        ['name' => 'Licence 2', 'created_at' => now(), 'updated_at' => now()],
+        ['name' => 'Licence 3', 'created_at' => now(), 'updated_at' => now()],
+        ['name' => 'Master 1', 'created_at' => now(), 'updated_at' => now()],
+        ['name' => 'Master 2', 'created_at' => now(), 'updated_at' => now()],
+    ];
 
-        DB::table('level_education')->insert($levels);
+    DB::table('level_education')->insert($levels);
 
-        // Récupération des IDs des niveaux
-        $levels = DB::table('level_education')->get();
+    // Récupération des IDs des niveaux d'éducation
+    $levels = DB::table('level_education')->get();
 
-        // Insertion des départements
-        $departments = ['Génie Logiciel', 'Sécurité Informatique', 'IA'];
-        $data = [];
+    // Insertion des départements
+    $departments = ['Génie Logiciel', 'Sécurité Informatique', 'IA'];
 
-        foreach ($departments as $department) {
-            $departmentId = DB::table('departments')->insertGetId([
-                'name' => $department,
+    foreach ($departments as $department) {
+        // Insérer le département et récupérer son ID
+        $departmentId = DB::table('departments')->insertGetId([
+            'name' => $department,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Associer le département avec chaque niveau d'éducation dans la table pivot
+        foreach ($levels as $level) {
+            DB::table('department_level')->insert([
+                'department_id' => $departmentId,
+                'level_education_id' => $level->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-
-            // Association avec chaque niveau dans la table pivot
-            foreach ($levels as $level) {
-                DB::table('department_level')->insert([
-                    'department_id' => $departmentId,
-                    'level_education_id' => $level->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
         }
+    }
     }
 
     /**
