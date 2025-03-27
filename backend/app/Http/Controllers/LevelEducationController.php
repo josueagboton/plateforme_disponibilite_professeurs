@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class LevelEducationController extends Controller
 {
+    //affiche la liste des niveau d'étude
     public function index()
     {
         $levels = LevelEducation::with('departments')->get();

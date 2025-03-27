@@ -73,6 +73,12 @@ class AdministratorController extends Controller
 
         $professor = Professors::find($request->user_id);
 
+        if(!$professor){
+            return response()->json([
+                'error' => "User is not Professor",
+            ], 422);
+        }
+
         // ➡️ Date de début de la semaine en cours
         $startOfWeek = now()->startOfWeek(); // Lundi à 00:00:00
         $endOfWeek = now()->endOfWeek(); // Dimanche à 23:59:59
@@ -140,21 +146,6 @@ class AdministratorController extends Controller
     }
 
     }
-
-
-    public function getWeeklySchedule()
-{
-    $startOfWeek = now()->startOfWeek(); // Lundi à 00:00:00
-    $endOfWeek = now()->endOfWeek(); // Dimanche à 23:59:59
-
-    $schedules = CourseSchedule::with(['course', 'professor'])
-        ->whereBetween('day', [$startOfWeek, $endOfWeek])
-        ->orderBy('day')
-        ->orderBy('hour_start')
-        ->get();
-
-    return response()->json($schedules);
-}
 
 
 
