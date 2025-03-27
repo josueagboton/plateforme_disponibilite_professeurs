@@ -13,7 +13,7 @@ class DepartmentController extends Controller
         $departments = Department::with('levels')->get();
 
         return response()->json([
-            'success' => true,
+            'success' => "success",
             'data' => $departments
         ]);
     }

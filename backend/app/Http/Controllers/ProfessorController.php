@@ -38,6 +38,7 @@ class ProfessorController extends Controller
         }
     }
 
+    //liste des profs inscrits
     public function index()
     {
         $professors = Professors::where('role', 'professor')->get();
@@ -48,9 +49,10 @@ class ProfessorController extends Controller
         ]);
     }
 
+    //afficher les details d'un profs et ses disponibilites
     public function show($id)
     {
-        $professor = Professors::find($id);
+        $professor = Professors::with('availabilities')->find($id);
 
         if (!$professor) {
             return response()->json([
@@ -63,13 +65,7 @@ class ProfessorController extends Controller
             'status' => 'success',
             'data' => $professor
         ]);
+
     }
-
-
-
-
-
-
-
 
 }

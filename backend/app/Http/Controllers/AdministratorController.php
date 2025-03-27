@@ -79,19 +79,11 @@ class AdministratorController extends Controller
             ], 422);
         }
 
-        // ➡️ Date de début de la semaine en cours
-        $startOfWeek = now()->startOfWeek(); // Lundi à 00:00:00
-        $endOfWeek = now()->endOfWeek(); // Dimanche à 23:59:59
 
-        // ➡️ Vérification si le jour demandé est bien dans la même semaine
+        //  formatage de la date
         $day = Carbon::parse($request->day);
-        if (!$day->between($startOfWeek, $endOfWeek)) {
-            return response()->json([
-                'message' => 'Le cours doit être programmé dans la semaine en cours.'
-            ], 400);
-        }
 
-        // ➡️ Vérification si le professeur est disponible à cette heure et ce jour
+        //  Vérification si le professeur est disponible à cette heure et ce jour
         $isAvailable = $professor->availabilities()
             ->whereDate('day', $day)
             ->whereTime('hour_start', '<=', $request->hour_start)
@@ -103,7 +95,7 @@ class AdministratorController extends Controller
                 'message' => 'Le professeur n\'est pas disponible à cette heure.'
             ], 400);
         }
-        // ➡️ Vérification de conflit avec un autre cours déjà programmé
+        //  Vérification de conflit avec un autre cours déjà programmé
         $isConflict = CourseSchedule::where('user_id', $professor->id)
             ->where('day', $day)
             ->where(function ($query) use ($request) {
@@ -122,7 +114,7 @@ class AdministratorController extends Controller
             ], 400);
         }
 
-        // ➡️ Enregistrer la programmation du cours
+        //  Enregistrer la programmation du cours
         $schedule = CourseSchedule::create([
             'day' => $request->day,
             'hour_start' => $request->hour_start,

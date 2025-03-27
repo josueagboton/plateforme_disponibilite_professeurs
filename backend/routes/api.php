@@ -23,6 +23,11 @@ Route::post('/register/administrator', [AuthController::class, 'registerUser'])-
 //consulter l'emploie de temps par tout le monde sans authentification
 Route::get('/weekly-schedule', [WeeklyScheduleController::class, 'getWeeklySchedule']);
 
+//les filieres
+Route::get('/departments', [DepartmentController::class, 'index']);
+
+//recuperer les niveaux d'etudes
+Route::get('/level-educations', [LevelEducationController::class, 'index']);
 
 //connexion
 Route::middleware('guest')->post('/login', [AuthController::class, 'login'])->name('login');
@@ -58,25 +63,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/courses/{courseId}/schedule', [AdministratorController::class, 'scheduleCourse']);
 
 
-    //pour les professeurs 
+    //pour les professeurs
     //la listes des profs
     Route::get('/professors', [ProfessorController::class, 'index']);
 
-    //afficher un prof par son id
+    //afficher un prof par son id et ses disponibilités
     Route::get('/professors/{id}', [ProfessorController::class, 'show']);
 
 
     //afficher les prof disponibles
     Route::get('available-teachers', [ProfessorController::class, 'availableTeachers']);
-
-    //les filieres
-    Route::get('/departments', [DepartmentController::class, 'index']);
-
-    //recuperer les niveaux d'etudes
-    Route::get('/level-educations', [LevelEducationController::class, 'index']);
-
-
-
 
 });
 

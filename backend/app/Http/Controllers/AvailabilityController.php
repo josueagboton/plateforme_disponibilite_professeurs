@@ -35,9 +35,11 @@ class AvailabilityController extends Controller
         ]);
 
         // Vérifiez si le professeur existe
-        $professorExists = User::find($request->user_id);
+        $professorExists = User::where('id', $request->user_id)
+        ->where('role', 'professor')
+        ->exists();
         if (!$professorExists) {
-            return response()->json(['error' => 'Professeur introuvable'], 400);
+            return response()->json(['error' => 'User is not Professor'], 400);
         }
 
 
@@ -48,6 +50,7 @@ class AvailabilityController extends Controller
             'hour_End' => $request->hour_end,
             'user_id' => $request->user_id,
         ]);
+
 
         // Retourner la disponibilité créée en réponse
         return response()->json(['availability' => $availability,
@@ -88,6 +91,11 @@ class AvailabilityController extends Controller
             'hour_end' => 'required|date_format:H:i|after:hour_Start',
             'user_id' => 'required|exists:users,id',
         ]);
+        // Vérifiez si le professeur existe
+        $professorExists = User::find($request->user_id);
+        if (!$professorExists) {
+            return response()->json(['error' => 'Professeur introuvable'], 400);
+        }
 
         $availability->update($request->all());
 
@@ -104,7 +112,7 @@ class AvailabilityController extends Controller
 
         return response()->json(['message' => 'Availability deleted successfully']);
     }
-    // ✅ Restaurer une disponibilité supprimée
+    // Restaurer une disponibilité supprimée
     public function restore($id)
     {
         $availability = Availability::withTrashed()->findOrFail($id);
@@ -113,7 +121,7 @@ class AvailabilityController extends Controller
         return response()->json(['message' => 'Availability restored successfully']);
     }
 
-    // ✅ Liste des disponibilités supprimées
+    // Liste des disponibilités supprimées
     public function trashed()
     {
         $availabilities = Availability::onlyTrashed()->get();
