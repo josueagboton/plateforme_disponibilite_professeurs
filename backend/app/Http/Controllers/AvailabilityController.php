@@ -35,9 +35,11 @@ class AvailabilityController extends Controller
         ]);
 
         // Vérifiez si le professeur existe
-        $professorExists = User::find($request->user_id);
+        $professorExists = User::where('id', $request->user_id)
+        ->where('role', 'professor')
+        ->exists();
         if (!$professorExists) {
-            return response()->json(['error' => 'Professeur introuvable'], 400);
+            return response()->json(['error' => 'User is not Professor'], 400);
         }
 
 
@@ -48,6 +50,7 @@ class AvailabilityController extends Controller
             'hour_End' => $request->hour_end,
             'user_id' => $request->user_id,
         ]);
+
 
         // Retourner la disponibilité créée en réponse
         return response()->json(['availability' => $availability,

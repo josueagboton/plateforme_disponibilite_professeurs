@@ -14,7 +14,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Courses::with('professor')->get();
+        $courses = Courses::all();
         return response()->json($courses);
     }
 
@@ -26,27 +26,15 @@ class CourseController extends Controller
         try {
             //code...
             $request->validate([
-                'subject_taught' => 'required|string|max:255',
+                'subject_taught' => 'required|unique:courses|string|max:255',
                 'duration' => 'required|integer',
                 'description' => 'required|string',
-                'user_id' => 'required|exists:users,id',
             ]);
-
-            $prof = Professors::where('role', 'professor')
-            ->where('id', $request->user_id)
-            ->first();
-
-            if(!$prof){
-                return response()->json([
-                    'error' => "User is not Professor",
-                ], 422);
-            }
 
             $course = Courses::create([
                 'subject_taught' => $request->subject_taught,
                 'duration' => $request->duration,
                 'description' => $request->description,
-                'user_id' => $prof->id,
             ]);
 
             return response()->json($course, 201);
@@ -63,7 +51,9 @@ class CourseController extends Controller
      */
     public function show(string $id)
     {
-        $course = Courses::with('professor')->find($id);
+        // $course = Courses::with('professor')->find($id);
+        $course = Courses::find($id);
+
         if (!$course) {
             return response()->json(['message' => 'Course not found'], 404);
         }
@@ -87,7 +77,7 @@ class CourseController extends Controller
             'subject_taught' => 'sometimes|string|max:255',
             'duration' => 'integer',
             'description' => 'sometimes|string',
-            'user_id' => 'sometimes|exists:users,id',
+            // 'user_id' => 'sometimes|exists:users,id',
         ]);
 
         $course->update($validated);

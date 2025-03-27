@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->string('subject_taught'); // intitule (String)
+            $table->string('subject_taught')->unique(); // intitule (String)
             $table->integer('duration');
             $table->string('description'); // description (String)
 
-            $table->unsignedBigInteger('user_id'); // Clé étrangère vers `users`
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->unsignedBigInteger('user_id'); // Clé étrangère vers `users`
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
             $table->softDeletes();

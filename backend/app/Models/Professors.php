@@ -22,10 +22,10 @@ class Professors extends User
         });
     }
 
-    public function courses()
-    {
-        return $this->hasMany(Courses::class);
-    }
+    // public function courses()
+    // {
+    //     return $this->hasMany(Courses::class);
+    // }
 
     public function availabilities()
     {
