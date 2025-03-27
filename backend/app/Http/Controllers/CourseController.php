@@ -25,7 +25,7 @@ class CourseController extends Controller
     {
         try {
             //code...
-            $validated = $request->validate([
+            $request->validate([
                 'subject_taught' => 'required|string|max:255',
                 'duration' => 'required|integer',
                 'description' => 'required|string',
