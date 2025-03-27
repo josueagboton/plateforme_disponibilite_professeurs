@@ -67,7 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //la listes des profs
     Route::get('/professors', [ProfessorController::class, 'index']);
 
-    //afficher un prof par son id
+    //afficher un prof par son id et ses disponibilités
     Route::get('/professors/{id}', [ProfessorController::class, 'show']);
 
 

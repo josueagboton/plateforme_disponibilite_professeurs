@@ -88,6 +88,11 @@ class AvailabilityController extends Controller
             'hour_end' => 'required|date_format:H:i|after:hour_Start',
             'user_id' => 'required|exists:users,id',
         ]);
+        // Vérifiez si le professeur existe
+        $professorExists = User::find($request->user_id);
+        if (!$professorExists) {
+            return response()->json(['error' => 'Professeur introuvable'], 400);
+        }
 
         $availability->update($request->all());
 
@@ -104,7 +109,7 @@ class AvailabilityController extends Controller
 
         return response()->json(['message' => 'Availability deleted successfully']);
     }
-    // ✅ Restaurer une disponibilité supprimée
+    // Restaurer une disponibilité supprimée
     public function restore($id)
     {
         $availability = Availability::withTrashed()->findOrFail($id);
@@ -113,7 +118,7 @@ class AvailabilityController extends Controller
         return response()->json(['message' => 'Availability restored successfully']);
     }
 
-    // ✅ Liste des disponibilités supprimées
+    // Liste des disponibilités supprimées
     public function trashed()
     {
         $availabilities = Availability::onlyTrashed()->get();
