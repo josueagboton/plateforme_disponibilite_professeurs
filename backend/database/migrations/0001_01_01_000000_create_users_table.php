@@ -17,9 +17,8 @@ return new class extends Migration
             $table->string('lastname');
             $table->enum('sex', ['M', 'F'])->default('M');
             $table->enum('role', ['student', 'professor', 'administrator'])->default('professor');
-            // $table->enum('function', ['Secretaire', 'DA', 'CS'])->default('Secretaire');
 
-            $table->string('email')->unique();
+            $table->string('email', 191)->unique();
             $table->string('grade')->nullable(); // grade (String) pour un prof
             $table->timestamp('email_verified_at')->nullable();
 
