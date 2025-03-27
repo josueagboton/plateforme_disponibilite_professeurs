@@ -43,7 +43,7 @@ class ProfessorController extends Controller
         $professors = Professors::where('role', 'professor')->get();
 
         return response()->json([
-            'status' => 'success',
+            'status' => 'successfully ',
             'data' => $professors
         ]);
     }
