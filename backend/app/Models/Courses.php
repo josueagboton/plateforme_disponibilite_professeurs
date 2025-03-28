@@ -15,7 +15,6 @@ class Courses extends Model
         'subject_taught',
         'duration',
         'description',
-        // 'user_id',
     ];
 
     // public function professor()
