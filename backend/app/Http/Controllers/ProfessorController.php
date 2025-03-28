@@ -17,7 +17,10 @@ class ProfessorController extends Controller
     {
         try {
 
-            $profs = Professors::with('availabilities')->get();
+            $profs = Professors::where('role', 'professor')
+            ->whereHas('availabilities') // Vérifie que la relation 'availabilities' existe (count > 0)
+            ->with('availabilities')
+            ->get();
 
             return response()->json([
                 'professors' => $profs
