@@ -16,16 +16,11 @@ class ProfessorController extends Controller
     public function availableTeachers()
     {
         try {
-            $currentTime = now()->format('H:i:s');
 
-
-            $startOfWeek = now()->startOfWeek()->format('Y-m-d');
-            $endOfWeek = now()->endOfWeek()->format('Y-m-d');
-
-            $profs = Professors::whereHas('availabilities', function ($query) use ($currentTime, $startOfWeek, $endOfWeek) {
-                    $query->whereBetween('day', [$startOfWeek, $endOfWeek]); // Filtrer la semaine complète
-
-                })->with('availabilities')->get();
+            $profs = Professors::where('role', 'professor')
+            ->whereHas('availabilities') // Vérifie que la relation 'availabilities' existe (count > 0)
+            ->with('availabilities')
+            ->get();
 
             return response()->json([
                 'professors' => $profs
